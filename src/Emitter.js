@@ -1,12 +1,13 @@
 export default new class {
     constructor() {
-        this.listeners = new Map();
+        this.listeners = new Map()
     }
 
     addListener(label, callback, vm) {
-        if(typeof callback == 'function'){
-            this.listeners.has(label) || this.listeners.set(label, []);
-            this.listeners.get(label).push({callback: callback, vm: vm});
+        if (typeof callback === 'function') {
+            if (!this.listeners.has(label))
+                this.listeners.set(label, [])
+            this.listeners.get(label).push({callback: callback, vm: vm})
 
             return true
         }
@@ -16,34 +17,34 @@ export default new class {
 
     removeListener(label, callback, vm) {
         let listeners = this.listeners.get(label),
-            index;
+            index
 
         if (listeners && listeners.length) {
             index = listeners.reduce((i, listener, index) => {
-                return (typeof listener.callback == 'function' && listener.callback === callback && listener.vm == vm) ?
+                return (typeof listener.callback === 'function' && listener.callback === callback && listener.vm === vm) ?
                     i = index :
-                    i;
-            }, -1);
+                    i
+            }, -1)
 
             if (index > -1) {
-                listeners.splice(index, 1);
-                this.listeners.set(label, listeners);
-                return true;
+                listeners.splice(index, 1)
+                this.listeners.set(label, listeners)
+                return true
             }
         }
-        return false;
+        return false
     }
 
     emit(label, ...args) {
-        let listeners = this.listeners.get(label);
+        let listeners = this.listeners.get(label)
 
         if (listeners && listeners.length) {
             listeners.forEach((listener) => {
-                listener.callback.call(listener.vm,...args)
-            });
-            return true;
+                listener.callback.call(listener.vm, ...args)
+            })
+            return true
         }
-        return false;
+        return false
     }
 
 }
